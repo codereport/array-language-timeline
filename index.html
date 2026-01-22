@@ -181,7 +181,125 @@
             white-space: nowrap;
             box-shadow: 0 2px 8px rgba(0,0,0,0.5);
             margin-bottom: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
         }
+        
+        .version-bubble:hover {
+            transform: scale(1.1);
+            border-color: #8899ff;
+        }
+        
+        .changelog-tooltip {
+            display: none;
+            position: fixed;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 16px 20px;
+            font-size: 2em;
+            font-weight: normal;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            max-width: 1400px;
+            min-width: 1000px;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: left;
+            line-height: 1.6;
+        }
+        
+        .changelog-tooltip.visible {
+            display: block;
+        }
+        
+        .changelog-tooltip h3 {
+            margin: 0.8em 0 0.5em 0;
+            color: #8899ff;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        
+        .changelog-tooltip h3:first-of-type {
+            margin-top: 0;
+        }
+        
+        .changelog-tooltip h4 {
+            margin: 0.6em 0 0.4em 0;
+            color: #99aaff;
+            font-size: 0.95em;
+            font-weight: bold;
+        }
+        
+        .changelog-tooltip h5 {
+            margin: 0.5em 0 0.3em 0;
+            color: #aabbff;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .changelog-tooltip p {
+            margin: 0.5em 0;
+            line-height: 1.6;
+        }
+        
+        .changelog-tooltip code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        .changelog-tooltip pre {
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 0.8em 0;
+        }
+        
+        .changelog-tooltip pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .changelog-tooltip .release-header {
+            margin: 0 0 16px 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .changelog-tooltip .release-header a {
+            color: #8899ff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .changelog-tooltip .release-header a:hover {
+            color: #aabbff;
+            text-decoration: underline;
+        }
+        
+        .changelog-tooltip ul {
+            margin: 8px 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+        
+        .changelog-tooltip li {
+            margin: 6px 0;
+        }
+        
+        .changelog-tooltip strong {
+            color: #ff8899;
+            font-weight: bold;
+        }
+        
 
         .date-label {
             font-size: 0.7em;
@@ -316,6 +434,13 @@
                     <div class="month-notch" style="left: 75%;"></div>
                     <div class="month-notch" style="left: 87.5%;"></div>
                     
+                    <!-- Uiua 0.10.0: Apr 4, 2024 -->
+                    <div class="timeline-event below" style="left: 12.50%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.10.0">0.10.0</div>
+                        <div class="date-label">Apr 4, 2024</div>
+                    </div>
+                    
                     <!-- ArrayCast Episode 77: Apr 12, 2024 -->
                     <div class="timeline-event" style="left: 13.97%;">
                         <span class="podcast-wrapper" data-title="Episode 77: Kai Schmidt and the Evolving Uiua Programming Language"><img src="assets/arraycast_logo.webp" alt="ArrayCast" class="podcast-icon"></span>
@@ -330,10 +455,31 @@
                         <div class="date-label">May 10, 2024</div>
                     </div>
                     
-                    <!-- Uiua 0.14.0: Dec 20, 2024 -->
-                    <div class="timeline-event" style="left: 48%;">
+                    <!-- Uiua 0.11.0: Jun 2, 2024 -->
+                    <div class="timeline-event below" style="left: 20.35%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.14.0</div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.11.0">0.11.0</div>
+                        <div class="date-label">Jun 2, 2024</div>
+                    </div>
+                    
+                    <!-- Uiua 0.12.0: Aug 16, 2024 -->
+                    <div class="timeline-event" style="left: 30.32%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.12.0">0.12.0</div>
+                        <div class="date-label">Aug 16, 2024</div>
+                    </div>
+                    
+                    <!-- Uiua 0.13.0: Oct 21, 2024 -->
+                    <div class="timeline-event below" style="left: 39.10%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.13.0">0.13.0</div>
+                        <div class="date-label">Oct 21, 2024</div>
+                    </div>
+                    
+                    <!-- Uiua 0.14.0: Dec 20, 2024 -->
+                    <div class="timeline-event" style="left: 47.07%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.14.0">0.14.0</div>
                         <div class="date-label">Dec 20, 2024</div>
                     </div>
                     
@@ -345,23 +491,23 @@
                     </div>
                     
                     <!-- Uiua 0.15.0: Apr 3, 2025 -->
-                    <div class="timeline-event" style="left: 62.74%;">
+                    <div class="timeline-event" style="left: 60.90%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.15.0</div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.15.0">0.15.0</div>
                         <div class="date-label">Apr 3, 2025</div>
                     </div>
                     
                     <!-- Uiua 0.16.0: May 18, 2025 -->
-                    <div class="timeline-event" style="left: 68.90%;">
+                    <div class="timeline-event" style="left: 66.89%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.16.0</div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.16.0">0.16.0</div>
                         <div class="date-label">May 18, 2025</div>
                     </div>
                     
                     <!-- Uiua 0.17.0: Sep 23, 2025 -->
-                    <div class="timeline-event" style="left: 86.44%;">
+                    <div class="timeline-event" style="left: 83.91%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.17.0</div>
+                        <div class="version-bubble" data-language="uiua" data-version="0.17.0">0.17.0</div>
                         <div class="date-label">Sep 23, 2025</div>
                     </div>
                 </div>
@@ -433,14 +579,14 @@
                     <!-- J 9.5.0: Mar 28, 2024 -->
                     <div class="timeline-event" style="left: 11.92%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">9.5.0</div>
+                        <div class="version-bubble" data-language="j" data-version="9.5.0">9.5.0</div>
                         <div class="date-label">Mar 28, 2024</div>
                     </div>
                     
                     <!-- J 9.6.0: Mar 6, 2025 -->
                     <div class="timeline-event" style="left: 58.77%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">9.6.0</div>
+                        <div class="version-bubble" data-language="j" data-version="9.6.0">9.6.0</div>
                         <div class="date-label">Mar 6, 2025</div>
                     </div>
                     
@@ -469,49 +615,49 @@
                     <!-- TinyAPL 0.2.0: Mar 14, 2024 - BELOW -->
                     <div class="timeline-event below" style="left: 10.00%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.2.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.2.0">0.2.0</div>
                         <div class="date-label">Mar 14, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.3.0: May 20, 2024 - ABOVE -->
                     <div class="timeline-event above" style="left: 19.18%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.3.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.3.0">0.3.0</div>
                         <div class="date-label">May 20, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.4.0: May 30, 2024 - BELOW -->
                     <div class="timeline-event below" style="left: 20.55%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.4.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.4.0">0.4.0</div>
                         <div class="date-label">May 30, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.5.0: Aug 3, 2024 - ABOVE -->
                     <div class="timeline-event above" style="left: 29.45%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.5.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.5.0">0.5.0</div>
                         <div class="date-label">Aug 3, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.6.0: Aug 10, 2024 - BELOW -->
                     <div class="timeline-event below" style="left: 30.41%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.6.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.6.0">0.6.0</div>
                         <div class="date-label">Aug 10, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.7.0: Sep 5, 2024 - ABOVE -->
                     <div class="timeline-event above" style="left: 33.97%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.7.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.7.0">0.7.0</div>
                         <div class="date-label">Sep 5, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.8.0: Sep 13, 2024 - BELOW -->
                     <div class="timeline-event below" style="left: 35.07%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.8.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.8.0">0.8.0</div>
                         <div class="date-label">Sep 13, 2024</div>
                     </div>
                     
@@ -525,21 +671,21 @@
                     <!-- TinyAPL 0.9.0: Oct 2, 2024 - ABOVE -->
                     <div class="timeline-event above" style="left: 37.67%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.9.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.9.0">0.9.0</div>
                         <div class="date-label">Oct 2, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.10.0: Oct 26, 2024 - BELOW -->
                     <div class="timeline-event below" style="left: 40.96%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.10.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.10.0">0.10.0</div>
                         <div class="date-label">Oct 26, 2024</div>
                     </div>
                     
                     <!-- TinyAPL 0.11.0: Nov 30, 2024 - ABOVE -->
                     <div class="timeline-event above" style="left: 45.75%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.11.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.11.0">0.11.0</div>
                         <div class="date-label">Nov 30, 2024</div>
                     </div>
                     
@@ -553,7 +699,7 @@
                     <!-- TinyAPL 0.12.0: Mar 13, 2025 - BELOW -->
                     <div class="timeline-event below" style="left: 59.73%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">0.12.0</div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.12.0">0.12.0</div>
                         <div class="date-label">Mar 13, 2025</div>
                     </div>
                 </div>
@@ -590,22 +736,241 @@
         </div>
     </div>
     <script>
-        function updateTooltipPosition(wrapper) {
-            const rect = wrapper.getBoundingClientRect();
+        // Load releases metadata and cached notes
+        let releasesData = {};
+        let notesCache = {};
+        
+        Promise.all([
+            fetch('releases.json').then(r => r.json()),
+            fetch('release-notes-cache.json').then(r => r.json()).catch(() => ({}))
+        ]).then(([releases, cache]) => {
+            releasesData = releases;
+            notesCache = cache;
+            initializeVersionBubbles();
+        }).catch(error => console.error('Error loading data:', error));
+        
+        function renderMarkdown(text) {
+            if (!text) return '';
+            
+            let html = '';
+            const lines = text.split('\n');
+            let inList = false;
+            let inCodeBlock = false;
+            let codeBlock = '';
+            
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                
+                // Handle code blocks
+                if (line.trim().startsWith('```')) {
+                    if (inCodeBlock) {
+                        html += '<pre><code>' + escapeHtml(codeBlock) + '</code></pre>';
+                        codeBlock = '';
+                        inCodeBlock = false;
+                    } else {
+                        if (inList) {
+                            html += '</ul>';
+                            inList = false;
+                        }
+                        inCodeBlock = true;
+                    }
+                    continue;
+                }
+                
+                if (inCodeBlock) {
+                    codeBlock += line + '\n';
+                    continue;
+                }
+                
+                // Handle headers
+                if (line.startsWith('# ')) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<h3>' + escapeHtml(line.substring(2)) + '</h3>';
+                    continue;
+                }
+                if (line.startsWith('## ')) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<h4 style="margin-top: 0.8em;">' + escapeHtml(line.substring(3)) + '</h4>';
+                    continue;
+                }
+                if (line.startsWith('### ')) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<h5 style="margin-top: 0.6em;">' + escapeHtml(line.substring(4)) + '</h5>';
+                    continue;
+                }
+                
+                // Handle list items
+                if (line.match(/^[\*\-]\s/)) {
+                    if (!inList) {
+                        html += '<ul>';
+                        inList = true;
+                    }
+                    let content = line.substring(2);
+                    content = formatInlineMarkdown(content);
+                    html += '<li>' + content + '</li>';
+                    continue;
+                }
+                
+                // Empty line - close list if open
+                if (line.trim() === '') {
+                    if (inList) {
+                        html += '</ul>';
+                        inList = false;
+                    }
+                    html += '<br>';
+                    continue;
+                }
+                
+                // Regular paragraph
+                if (inList && !line.match(/^[\*\-]\s/)) {
+                    html += '</ul>';
+                    inList = false;
+                }
+                
+                html += '<p>' + formatInlineMarkdown(line) + '</p>';
+            }
+            
+            if (inList) html += '</ul>';
+            if (inCodeBlock) html += '<pre><code>' + escapeHtml(codeBlock) + '</code></pre>';
+            
+            return html;
+        }
+        
+        function formatInlineMarkdown(text) {
+            // Bold with **text** or __text__
+            text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+            
+            // Italic with *text* or _text_
+            text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
+            
+            // Inline code with `code`
+            text = text.replace(/`([^`]+)`/g, '<code style="background: #1a1a1a; padding: 2px 6px; border-radius: 3px;">$1</code>');
+            
+            // Links [text](url)
+            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #8899ff;">$1</a>');
+            
+            return text;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function getReleaseUrl(language, version) {
+            const langData = releasesData.languages[language];
+            if (!langData) return null;
+            
+            const versionNoDots = version.replace(/\./g, '');
+            return langData.url_template
+                .replace('{version}', version)
+                .replace('{version_nodots}', versionNoDots);
+        }
+        
+        function initializeVersionBubbles() {
+            const versionBubbles = document.querySelectorAll('.version-bubble[data-language][data-version]');
+            versionBubbles.forEach(bubble => {
+                const language = bubble.dataset.language;
+                const version = bubble.dataset.version;
+                const cacheKey = `${language}-${version}`;
+                
+                if (releasesData.languages[language]) {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'changelog-tooltip';
+                    
+                    const url = getReleaseUrl(language, version);
+                    const langName = releasesData.languages[language].name;
+                    const header = `<div class="release-header"><a href="${url}" target="_blank">${langName} ${version} Release Notes →</a></div>`;
+                    
+                    // Check if we have cached notes
+                    if (notesCache[cacheKey]) {
+                        const notes = notesCache[cacheKey].notes;
+                        // Render markdown (limit to first 5000 chars to keep tooltips reasonable)
+                        const truncatedNotes = notes.length > 5000 ? notes.substring(0, 5000) + '\n\n...' : notes;
+                        const formattedNotes = '<div style="padding: 12px 0;">' + 
+                                              renderMarkdown(truncatedNotes) +
+                                              (notes.length > 5000 ? '<p style="text-align: center; color: #8899ff;"><em>(see full notes at link above)</em></p>' : '') +
+                                              '</div>';
+                        tooltip.innerHTML = header + formattedNotes;
+                    } else {
+                        tooltip.innerHTML = header + '<div style="padding: 20px;">Release notes not yet cached. Run <code>./fetch-release-notes.py</code> to fetch.</div>';
+                    }
+                    
+                    document.body.appendChild(tooltip);
+                    
+                    let hideTimeout;
+                    
+                    const showTooltip = () => {
+                        clearTimeout(hideTimeout);
+                        tooltip.classList.add('visible');
+                        updateTooltipPosition(bubble, tooltip);
+                    };
+                    
+                    const hideTooltip = () => {
+                        hideTimeout = setTimeout(() => {
+                            tooltip.classList.remove('visible');
+                        }, 100);
+                    };
+                    
+                    bubble.addEventListener('mouseenter', showTooltip);
+                    bubble.addEventListener('mouseleave', hideTooltip);
+                    
+                    tooltip.addEventListener('mouseenter', () => {
+                        clearTimeout(hideTimeout);
+                        tooltip.classList.add('visible');
+                    });
+                    tooltip.addEventListener('mouseleave', hideTooltip);
+                }
+            });
+        }
+        
+        function updateTooltipPosition(element, tooltip = null) {
+            const rect = element.getBoundingClientRect();
             const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
             const iconCenterX = rect.left + rect.width / 2;
             const viewportCenter = viewportWidth / 2;
             
-            // Simple rule: if icon is on left half of screen, show tooltip to the right
-            // If icon is on right half, show tooltip to the left
-            if (iconCenterX < viewportCenter) {
-                // Icon is on left side - show tooltip to the right
-                wrapper.style.setProperty('--tooltip-left', '100%');
-                wrapper.style.setProperty('--tooltip-transform', '0');
+            // For version bubble tooltips
+            if (tooltip) {
+                // Get tooltip dimensions
+                const tooltipRect = tooltip.getBoundingClientRect();
+                const tooltipWidth = Math.min(tooltipRect.width, 1400);
+                const tooltipHeight = Math.min(tooltipRect.height, viewportHeight * 0.8);
+                
+                // Position horizontally - center on bubble, but keep on screen
+                let left = iconCenterX - (tooltipWidth / 2);
+                if (left < 20) {
+                    left = 20; // Don't go off left edge
+                } else if (left + tooltipWidth > viewportWidth - 20) {
+                    left = viewportWidth - tooltipWidth - 20; // Don't go off right edge
+                }
+                
+                // Position vertically - above the bubble if possible, below if not
+                let top;
+                if (rect.top - tooltipHeight - 20 > 0) {
+                    // Position above
+                    top = rect.top - tooltipHeight - 10;
+                } else {
+                    // Position below
+                    top = rect.bottom + 10;
+                }
+                
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                tooltip.style.transform = 'none';
             } else {
-                // Icon is on right side - show tooltip to the left
-                wrapper.style.setProperty('--tooltip-left', '0');
-                wrapper.style.setProperty('--tooltip-transform', '-100%');
+                // For podcast wrapper tooltips (unchanged)
+                if (iconCenterX < viewportCenter) {
+                    element.style.setProperty('--tooltip-left', '100%');
+                    element.style.setProperty('--tooltip-transform', '0');
+                } else {
+                    element.style.setProperty('--tooltip-left', '0');
+                    element.style.setProperty('--tooltip-transform', '-100%');
+                }
             }
         }
         

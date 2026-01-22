@@ -1,0 +1,45 @@
+{
+  "languages": {
+    "uiua": {
+      "name": "Uiua",
+      "url_template": "https://github.com/uiua-lang/uiua/releases/tag/{version}"
+    },
+    "tinyapl": {
+      "name": "TinyAPL",
+      "url_template": "https://github.com/RubenVerg/TinyAPL/releases/tag/{version}.0"
+    },
+    "j": {
+      "name": "J",
+      "url_template": "https://code.jsoftware.com/wiki/System/ReleaseNotes/J{version_nodots}"
+    }
+  },
+  "releases": {
+    "uiua": [
+      "0.10.0",
+      "0.11.0",
+      "0.12.0",
+      "0.13.0",
+      "0.14.0",
+      "0.15.0",
+      "0.16.0",
+      "0.17.0"
+    ],
+    "tinyapl": [
+      "0.2.0",
+      "0.3.0",
+      "0.4.0",
+      "0.5.0",
+      "0.6.0",
+      "0.7.0",
+      "0.8.0",
+      "0.9.0",
+      "0.10.0",
+      "0.11.0",
+      "0.12.0"
+    ],
+    "j": [
+      "9.5.0",
+      "9.6.0"
+    ]
+  }
+}
