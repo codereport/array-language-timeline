@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Languages Timeline - 2024-2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            overflow-x: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a0a0a0;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .timeline-wrapper {
+            min-width: 1400px;
+            position: relative;
+        }
+
+        .timeline-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .language-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .timeline-container {
+            flex: 1;
+            position: relative;
+            height: 120px;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, #333, #555, #333);
+        }
+
+        .month-notch {
+            position: absolute;
+            top: 50px;
+            height: 25px;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        .timeline-event {
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+        }
+
+        .podcast-wrapper {
+            position: relative;
+            transform: translateY(-20px);
+        }
+        
+        .timeline-event.below .podcast-wrapper {
+            transform: translateY(0);
+        }
+
+        .podcast-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transition: transform 0s;
+            cursor: pointer;
+            display: block;
+        }
+
+        .podcast-wrapper:hover .podcast-icon {
+            transform: scale(1.2);
+        }
+
+        .podcast-wrapper::after {
+            content: attr(data-title);
+            position: absolute;
+            bottom: 100%;
+            left: var(--tooltip-left, 50%);
+            transform: translateX(var(--tooltip-transform, -50%));
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e0e0e0;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+        }
+
+        .podcast-wrapper:hover::after {
+            opacity: 1;
+        }
+        
+        .timeline-event.below .podcast-wrapper {
+            margin-bottom: 0;
+            margin-top: 5px;
+        }
+        
+        .timeline-event.below .podcast-wrapper::after {
+            bottom: auto;
+            top: 100%;
+            left: var(--tooltip-left, 50%);
+            transform: translateX(var(--tooltip-transform, -50%));
+            margin-bottom: 0;
+            margin-top: 8px;
+        }
+
+        .event-marker {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 57px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+        
+        .timeline-event.below .event-marker {
+            top: -8px;
+        }
+
+        .version-bubble {
+            background: #2a2a2a;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #8899ff;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+        }
+
+        .date-label {
+            font-size: 0.7em;
+            color: #999;
+            margin-bottom: 4px;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .timeline-event:has(.podcast-wrapper) .date-label {
+            transform: translateY(-20px);
+        }
+
+        .timeline-event.below {
+            top: 65px;
+            flex-direction: column;
+        }
+        
+        .timeline-event.below .version-bubble {
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        
+        .timeline-event.below .date-label {
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+        
+        .timeline-event.below .podcast-icon {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .timeline-event.above {
+            top: auto;
+            bottom: 65px;
+        }
+
+
+        @media (max-width: 1600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .timeline-wrapper {
+                min-width: 1200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Array Languages Timeline</h1>
+        <div class="subtitle">Major Releases & Podcast Appearances (Jan 2024 - Jan 2026)</div>
+        
+
+        <div class="timeline-wrapper">
+            <!-- BQN Timeline -->
+            <div class="timeline-row">
+                <img src="assets/bqn_logo.svg" alt="BQN" class="language-logo">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="month-notch" style="left: 12.5%;"></div>
+                    <div class="month-notch" style="left: 25%;"></div>
+                    <div class="month-notch" style="left: 37.5%;"></div>
+                    <div class="month-notch" style="left: 50%;"></div>
+                    <div class="month-notch" style="left: 62.5%;"></div>
+                    <div class="month-notch" style="left: 75%;"></div>
+                    <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- BQN 0.6.0: Jan 9, 2024 -->
+                    <div class="timeline-event" style="left: 1.1%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.6.0</div>
+                        <div class="date-label">Jan 9, 2024</div>
+                    </div>
+                    
+                    <!-- BQN 0.7.0: May 23, 2024 -->
+                    <div class="timeline-event below" style="left: 19.59%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.7.0</div>
+                        <div class="date-label">May 23, 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 2: May 27, 2024 -->
+                    <div class="timeline-event" style="left: 20.14%;">
+                        <span class="podcast-wrapper" data-title="Episode 2: BQN, I and Singeli with Marshall Lochbaum"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">May 27, 2024</div>
+                    </div>
+                    
+                    <!-- BQN 0.8.0: Oct 3, 2024 -->
+                    <div class="timeline-event" style="left: 37%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.8.0</div>
+                        <div class="date-label">Oct 3, 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 11: Dec 20, 2024 -->
+                    <div class="timeline-event" style="left: 48%;">
+                        <span class="podcast-wrapper" data-title="Episode 11: APL, BQN and AoC with dzaima"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Dec 20, 2024</div>
+                    </div>
+                    
+                    <!-- BQN 0.9.0: Mar 16, 2025 -->
+                    <div class="timeline-event" style="left: 60.14%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.9.0</div>
+                        <div class="date-label">Mar 16, 2025</div>
+                    </div>
+                    
+                    <!-- BQN 0.10.0: Nov 26, 2025 -->
+                    <div class="timeline-event" style="left: 95.07%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.10.0</div>
+                        <div class="date-label">Nov 26, 2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uiua Timeline -->
+            <div class="timeline-row">
+                <img src="assets/uiua.png" alt="Uiua" class="language-logo">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="month-notch" style="left: 12.5%;"></div>
+                    <div class="month-notch" style="left: 25%;"></div>
+                    <div class="month-notch" style="left: 37.5%;"></div>
+                    <div class="month-notch" style="left: 50%;"></div>
+                    <div class="month-notch" style="left: 62.5%;"></div>
+                    <div class="month-notch" style="left: 75%;"></div>
+                    <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- ArrayCast Episode 77: Apr 12, 2024 -->
+                    <div class="timeline-event" style="left: 13.97%;">
+                        <span class="podcast-wrapper" data-title="Episode 77: Kai Schmidt and the Evolving Uiua Programming Language"><img src="assets/arraycast_logo.webp" alt="ArrayCast" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Apr 12, 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 1: May 10, 2024 -->
+                    <div class="timeline-event" style="left: 17.81%;">
+                        <span class="podcast-wrapper" data-title="Episode 1: Uiua with Kai Schmidt"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">May 10, 2024</div>
+                    </div>
+                    
+                    <!-- Uiua 0.14.0: Dec 20, 2024 -->
+                    <div class="timeline-event" style="left: 48%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.14.0</div>
+                        <div class="date-label">Dec 20, 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 19: Feb 21, 2025 -->
+                    <div class="timeline-event" style="left: 57.12%;">
+                        <span class="podcast-wrapper" data-title="Episode 19: Uiua 0.15 with Kai Schmidt"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Feb 21, 2025</div>
+                    </div>
+                    
+                    <!-- Uiua 0.15.0: Apr 3, 2025 -->
+                    <div class="timeline-event" style="left: 62.74%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.15.0</div>
+                        <div class="date-label">Apr 3, 2025</div>
+                    </div>
+                    
+                    <!-- Uiua 0.16.0: May 18, 2025 -->
+                    <div class="timeline-event" style="left: 68.90%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.16.0</div>
+                        <div class="date-label">May 18, 2025</div>
+                    </div>
+                    
+                    <!-- Uiua 0.17.0: Sep 23, 2025 -->
+                    <div class="timeline-event" style="left: 86.44%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.17.0</div>
+                        <div class="date-label">Sep 23, 2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dyalog APL Timeline -->
+            <div class="timeline-row">
+                <img src="assets/apl_logo.png" alt="Dyalog APL" class="language-logo">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="month-notch" style="left: 12.5%;"></div>
+                    <div class="month-notch" style="left: 25%;"></div>
+                    <div class="month-notch" style="left: 37.5%;"></div>
+                    <div class="month-notch" style="left: 50%;"></div>
+                    <div class="month-notch" style="left: 62.5%;"></div>
+                    <div class="month-notch" style="left: 75%;"></div>
+                    <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- Dyalog APL 19.0: Mar 2024 -->
+                    <div class="timeline-event" style="left: 10.14%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">19.0</div>
+                        <div class="date-label">Mar 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 4: Aug 9, 2024 -->
+                    <div class="timeline-event" style="left: 30.27%;">
+                        <span class="podcast-wrapper" data-title="Episode 4: Dyalog APL with Adám Brudzewsky"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Aug 9, 2024</div>
+                    </div>
+                    
+                    <!-- Dyalog APL 20.0: ~Nov 2025 -->
+                    <div class="timeline-event" style="left: 93.70%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">20.0</div>
+                        <div class="date-label">Nov 2025</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 30: Jan 1, 2026 -->
+                    <div class="timeline-event" style="left: 100%;">
+                        <span class="podcast-wrapper" data-title="Episode 30: Dyalog 20.0 with Adám Brudzewsky"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Jan 1, 2026</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- J Timeline -->
+            <div class="timeline-row">
+                <img src="assets/j_logo.png" alt="J" class="language-logo">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="month-notch" style="left: 12.5%;"></div>
+                    <div class="month-notch" style="left: 25%;"></div>
+                    <div class="month-notch" style="left: 37.5%;"></div>
+                    <div class="month-notch" style="left: 50%;"></div>
+                    <div class="month-notch" style="left: 62.5%;"></div>
+                    <div class="month-notch" style="left: 75%;"></div>
+                    <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- ArrayCast Episode 73: Feb 16, 2024 -->
+                    <div class="timeline-event" style="left: 6.30%;">
+                        <span class="podcast-wrapper" data-title="Episode 73: Henry Rich and the Release of J9.5"><img src="assets/arraycast_logo.webp" alt="ArrayCast" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Feb 16, 2024</div>
+                    </div>
+                    
+                    <!-- J 9.5.0: Mar 28, 2024 -->
+                    <div class="timeline-event" style="left: 11.92%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">9.5.0</div>
+                        <div class="date-label">Mar 28, 2024</div>
+                    </div>
+                    
+                    <!-- J 9.6.0: Mar 6, 2025 -->
+                    <div class="timeline-event" style="left: 58.77%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">9.6.0</div>
+                        <div class="date-label">Mar 6, 2025</div>
+                    </div>
+                    
+                    <!-- ArrayCast Episode 104: Apr 25, 2025 -->
+                    <div class="timeline-event" style="left: 65.62%;">
+                        <span class="podcast-wrapper" data-title="Episode 104: J9.6 - The New J Version"><img src="assets/arraycast_logo.webp" alt="ArrayCast" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Apr 25, 2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TinyAPL Timeline -->
+            <div class="timeline-row">
+                <img src="assets/tinyapl.svg" alt="TinyAPL" class="language-logo">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="month-notch" style="left: 12.5%;"></div>
+                    <div class="month-notch" style="left: 25%;"></div>
+                    <div class="month-notch" style="left: 37.5%;"></div>
+                    <div class="month-notch" style="left: 50%;"></div>
+                    <div class="month-notch" style="left: 62.5%;"></div>
+                    <div class="month-notch" style="left: 75%;"></div>
+                    <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- TinyAPL 0.2.0: Mar 14, 2024 - BELOW -->
+                    <div class="timeline-event below" style="left: 10.00%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.2.0</div>
+                        <div class="date-label">Mar 14, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.3.0: May 20, 2024 - ABOVE -->
+                    <div class="timeline-event above" style="left: 19.18%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.3.0</div>
+                        <div class="date-label">May 20, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.4.0: May 30, 2024 - BELOW -->
+                    <div class="timeline-event below" style="left: 20.55%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.4.0</div>
+                        <div class="date-label">May 30, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.5.0: Aug 3, 2024 - ABOVE -->
+                    <div class="timeline-event above" style="left: 29.45%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.5.0</div>
+                        <div class="date-label">Aug 3, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.6.0: Aug 10, 2024 - BELOW -->
+                    <div class="timeline-event below" style="left: 30.41%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.6.0</div>
+                        <div class="date-label">Aug 10, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.7.0: Sep 5, 2024 - ABOVE -->
+                    <div class="timeline-event above" style="left: 33.97%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.7.0</div>
+                        <div class="date-label">Sep 5, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.8.0: Sep 13, 2024 - BELOW -->
+                    <div class="timeline-event below" style="left: 35.07%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.8.0</div>
+                        <div class="date-label">Sep 13, 2024</div>
+                    </div>
+                    
+                    <!-- ArrayCast Episode 88: Sep 13, 2024 -->
+                    <div class="timeline-event" style="left: 35.07%;">
+                        <span class="podcast-wrapper" data-title="Episode 88: Madeline Vergani and tinyapl"><img src="assets/arraycast_logo.webp" alt="ArrayCast" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Sep 13, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.9.0: Oct 2, 2024 - ABOVE -->
+                    <div class="timeline-event above" style="left: 37.67%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.9.0</div>
+                        <div class="date-label">Oct 2, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.10.0: Oct 26, 2024 - BELOW -->
+                    <div class="timeline-event below" style="left: 40.96%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.10.0</div>
+                        <div class="date-label">Oct 26, 2024</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.11.0: Nov 30, 2024 - ABOVE -->
+                    <div class="timeline-event above" style="left: 45.75%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.11.0</div>
+                        <div class="date-label">Nov 30, 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 14: Jan 25, 2025 -->
+                    <div class="timeline-event" style="left: 53.29%;">
+                        <span class="podcast-wrapper" data-title="Episode 14: TinyAPL with Madeline Vergani"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Jan 25, 2025</div>
+                    </div>
+                    
+                    <!-- TinyAPL 0.12.0: Mar 13, 2025 - BELOW -->
+                    <div class="timeline-event below" style="left: 59.73%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble">0.12.0</div>
+                        <div class="date-label">Mar 13, 2025</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kap Timeline -->
+            <div class="timeline-row">
+                <img src="assets/kap.png" alt="Kap" class="language-logo">
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div class="month-notch" style="left: 12.5%;"></div>
+                    <div class="month-notch" style="left: 25%;"></div>
+                    <div class="month-notch" style="left: 37.5%;"></div>
+                    <div class="month-notch" style="left: 50%;"></div>
+                    <div class="month-notch" style="left: 62.5%;"></div>
+                    <div class="month-notch" style="left: 75%;"></div>
+                    <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- ArrayCast Episode 72: Feb 2, 2024 -->
+                    <div class="timeline-event" style="left: 4.38%;">
+                        <span class="podcast-wrapper" data-title="Episode 72: Elias Mårtenson and the Kap array programming language"><img src="assets/arraycast_logo.webp" alt="ArrayCast" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Feb 2, 2024</div>
+                    </div>
+                    
+                    <!-- Tacit Talk Episode 3: Jul 12, 2024 -->
+                    <div class="timeline-event" style="left: 26.44%;">
+                        <span class="podcast-wrapper" data-title="Episode 3: Kap with Elias Mårtenson"><img src="assets/tacit_talk_logo.png" alt="Tacit Talk" class="podcast-icon"></span>
+                        <div class="event-marker podcast-marker"></div>
+                        <div class="date-label">Jul 12, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateTooltipPosition(wrapper) {
+            const rect = wrapper.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const iconCenterX = rect.left + rect.width / 2;
+            const viewportCenter = viewportWidth / 2;
+            
+            // Simple rule: if icon is on left half of screen, show tooltip to the right
+            // If icon is on right half, show tooltip to the left
+            if (iconCenterX < viewportCenter) {
+                // Icon is on left side - show tooltip to the right
+                wrapper.style.setProperty('--tooltip-left', '100%');
+                wrapper.style.setProperty('--tooltip-transform', '0');
+            } else {
+                // Icon is on right side - show tooltip to the left
+                wrapper.style.setProperty('--tooltip-left', '0');
+                wrapper.style.setProperty('--tooltip-transform', '-100%');
+            }
+        }
+        
+        // Update positions on load and resize
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrappers = document.querySelectorAll('.podcast-wrapper');
+            wrappers.forEach(wrapper => {
+                wrapper.addEventListener('mouseenter', () => updateTooltipPosition(wrapper));
+                updateTooltipPosition(wrapper); // Set initial position
+            });
+        });
+        
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.podcast-wrapper').forEach(wrapper => {
+                updateTooltipPosition(wrapper);
+            });
+        });
+    </script>
+</body>
+</html>
