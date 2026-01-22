@@ -42,11 +42,137 @@ def fetch_github_release(url):
     except Exception as e:
         return f"Error: {str(e)}"
 
+def element_to_markdown(element):
+    """Convert a BeautifulSoup element to markdown, preserving links and formatting."""
+    if not element:
+        return ""
+    
+    # Handle text nodes
+    if isinstance(element, str):
+        return element
+    
+    result = []
+    for child in element.children:
+        if isinstance(child, str):
+            result.append(child)
+        elif child.name == 'a':
+            href = child.get('href', '')
+            text = child.get_text(strip=True)
+            if href and text:
+                result.append(f"[{text}]({href})")
+            else:
+                result.append(text)
+        elif child.name in ['strong', 'b']:
+            text = element_to_markdown(child)
+            result.append(f"**{text}**")
+        elif child.name in ['em', 'i']:
+            text = element_to_markdown(child)
+            result.append(f"*{text}*")
+        elif child.name == 'code':
+            text = child.get_text(strip=True)
+            result.append(f"`{text}`")
+        else:
+            result.append(element_to_markdown(child))
+    
+    return ''.join(result)
+
+def fetch_dyalog_release(url):
+    """Fetch release notes from Dyalog documentation and convert to markdown."""
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        response.encoding = 'utf-8'
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # For docs.dyalog.com (v20.0+)
+        if 'docs.dyalog.com' in url:
+            # Find the main content area
+            content = soup.find('article')
+            if not content:
+                content = soup.find('div', class_='md-content')
+            
+            if not content:
+                return "Release notes not found on page."
+            
+            # Remove navigation and other non-content elements
+            for element in content.find_all(['nav', 'footer']):
+                element.decompose()
+            
+            markdown = []
+            
+            for element in content.children:
+                if not element.name:
+                    continue
+                
+                if element.name == 'h1':
+                    text = element.get_text(strip=True)
+                    markdown.append(f"# {text}\n")
+                elif element.name == 'h2':
+                    text = element.get_text(strip=True)
+                    markdown.append(f"\n## {text}\n")
+                elif element.name == 'h3':
+                    text = element.get_text(strip=True)
+                    markdown.append(f"\n### {text}\n")
+                elif element.name == 'ul':
+                    for li in element.find_all('li', recursive=False):
+                        li_md = element_to_markdown(li).strip()
+                        if li_md:
+                            markdown.append(f"* {li_md}")
+                    markdown.append("")
+                elif element.name == 'p':
+                    text_md = element_to_markdown(element).strip()
+                    if text_md and len(text_md) > 5:
+                        markdown.append(text_md)
+                        markdown.append("")
+                elif element.name == 'pre':
+                    code_text = element.get_text(strip=True)
+                    if code_text:
+                        markdown.append(f"```\n{code_text}\n```")
+                        markdown.append("")
+        
+        # For www.dyalog.com (v19.0)
+        else:
+            # Find main content
+            content = soup.find('div', id='content')
+            if not content:
+                content = soup.find('main')
+            
+            if not content:
+                return "Release notes not found on page."
+            
+            markdown = []
+            for element in content.find_all(['h1', 'h2', 'h3', 'p', 'ul']):
+                if element.name in ['h1', 'h2', 'h3']:
+                    level = element.name[1]
+                    text = element.get_text(strip=True)
+                    if text:
+                        markdown.append(f"\n{'#' * int(level)} {text}\n")
+                elif element.name == 'ul':
+                    for li in element.find_all('li', recursive=False):
+                        li_md = element_to_markdown(li).strip()
+                        if li_md:
+                            markdown.append(f"* {li_md}")
+                    markdown.append("")
+                elif element.name == 'p':
+                    text_md = element_to_markdown(element).strip()
+                    if text_md and len(text_md) > 5:
+                        markdown.append(text_md)
+                        markdown.append("")
+        
+        result = '\n'.join(markdown)
+        while '\n\n\n' in result:
+            result = result.replace('\n\n\n', '\n\n')
+        
+        return result.strip()
+    except Exception as e:
+        return f"Error fetching release notes: {str(e)}"
+
 def fetch_j_wiki_release(url):
     """Fetch release notes from J wiki and convert to markdown."""
     try:
         response = requests.get(url)
         response.raise_for_status()
+        response.encoding = 'utf-8'
         soup = BeautifulSoup(response.text, 'html.parser')
         
         # Find the parser output div which contains the main article content
@@ -82,19 +208,19 @@ def fetch_j_wiki_release(url):
                     markdown.append(f"\n### {text}\n")
                     last_was_list = False
             elif element.name == 'ul':
-                # Process list items
+                # Process list items with formatting preserved
                 for li in element.find_all('li', recursive=False):
-                    li_text = li.get_text(strip=True)
-                    if li_text and not li_text.startswith('http'):
-                        markdown.append(f"* {li_text}")
+                    li_md = element_to_markdown(li).strip()
+                    if li_md and not li_md.startswith('http'):
+                        markdown.append(f"* {li_md}")
                 markdown.append("")
                 last_was_list = True
             elif element.name == 'p':
-                text = element.get_text(strip=True)
-                if text and len(text) > 10:  # Skip very short paragraphs
+                text_md = element_to_markdown(element).strip()
+                if text_md and len(text_md) > 10:  # Skip very short paragraphs
                     if last_was_list:
                         markdown.append("")
-                    markdown.append(text)
+                    markdown.append(text_md)
                     markdown.append("")
                     last_was_list = False
             elif element.name == 'pre':
@@ -129,8 +255,16 @@ def main():
         print(f"\nFetching {lang_data['name']} releases...")
         
         for version in versions:
-            # Generate URL
-            url = lang_data['url_template'].replace('{version}', version)
+            # Generate URL - handle both template-based and explicit URL mapping
+            if 'releases' in lang_data:
+                # Explicit URL mapping (like Dyalog)
+                url = lang_data['releases'].get(version)
+                if not url:
+                    print(f"  {version}... ERROR: No URL found")
+                    continue
+            else:
+                # Template-based URL (like Uiua, TinyAPL, J)
+                url = lang_data['url_template'].replace('{version}', version)
             
             print(f"  {version}... ", end='', flush=True)
             
@@ -139,6 +273,8 @@ def main():
                 notes = fetch_github_release(url)
             elif 'jsoftware.com' in url:
                 notes = fetch_j_wiki_release(url)
+            elif 'dyalog.com' in url:
+                notes = fetch_dyalog_release(url)
             else:
                 notes = "Unknown source"
             

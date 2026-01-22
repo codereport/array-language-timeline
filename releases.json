@@ -11,6 +11,13 @@
     "j": {
       "name": "J",
       "url_template": "https://code.jsoftware.com/wiki/System/ReleaseNotes/J{version}"
+    },
+    "dyalog": {
+      "name": "Dyalog APL",
+      "releases": {
+        "19.0": "https://www.dyalog.com/dyalog/dyalog-versions/190.htm",
+        "20.0": "https://docs.dyalog.com/20.0/release-notes/introduction/"
+      }
     }
   },
   "releases": {
@@ -41,6 +48,10 @@
     "j": [
       "9.5",
       "9.6"
+    ],
+    "dyalog": [
+      "19.0",
+      "20.0"
     ]
   }
 }

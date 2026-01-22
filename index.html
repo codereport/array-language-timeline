@@ -529,7 +529,7 @@
                     <!-- Dyalog APL 19.0: Mar 2024 -->
                     <div class="timeline-event" style="left: 10.14%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">19.0</div>
+                        <div class="version-bubble" data-language="dyalog" data-version="19.0">19.0</div>
                         <div class="date-label">Mar 2024</div>
                     </div>
                     
@@ -543,7 +543,7 @@
                     <!-- Dyalog APL 20.0: ~Nov 2025 -->
                     <div class="timeline-event" style="left: 93.70%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble">20.0</div>
+                        <div class="version-bubble" data-language="dyalog" data-version="20.0">20.0</div>
                         <div class="date-label">Nov 2025</div>
                     </div>
                     
@@ -885,6 +885,12 @@
             const langData = releasesData.languages[language];
             if (!langData) return null;
             
+            // Handle explicit URL mapping (like Dyalog)
+            if (langData.releases) {
+                return langData.releases[version];
+            }
+            
+            // Handle template-based URLs
             return langData.url_template.replace('{version}', version);
         }
         
