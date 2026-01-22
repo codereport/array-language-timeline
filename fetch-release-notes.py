@@ -43,17 +43,73 @@ def fetch_github_release(url):
         return f"Error: {str(e)}"
 
 def fetch_j_wiki_release(url):
-    """Fetch release notes from J wiki."""
+    """Fetch release notes from J wiki and convert to markdown."""
     try:
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Find the main content
-        content = soup.find('div', id='content')
-        if content:
-            return content.get_text(separator='\n', strip=True)
-        return "Release notes not found on page."
+        # Find the parser output div which contains the main article content
+        content = soup.find('div', class_='mw-parser-output')
+        if not content:
+            content = soup.find('div', id='mw-content-text')
+        
+        if not content:
+            return "Release notes not found on page."
+        
+        # Remove navigation elements, TOC, and other non-content
+        for element in content.find_all(['div', 'table'], class_=['toc', 'navbox', 'metadata', 'ambox']):
+            element.decompose()
+        
+        # Convert wiki HTML to markdown-like format
+        markdown = []
+        last_was_list = False
+        
+        # Get direct children to avoid nested duplication
+        for element in content.children:
+            if not element.name:
+                continue
+                
+            if element.name == 'h2':
+                text = element.get_text(strip=True)
+                # Skip edit links
+                if '[edit]' not in text and text not in ['Contents', 'Navigation menu']:
+                    markdown.append(f"\n## {text}\n")
+                    last_was_list = False
+            elif element.name == 'h3':
+                text = element.get_text(strip=True)
+                if '[edit]' not in text:
+                    markdown.append(f"\n### {text}\n")
+                    last_was_list = False
+            elif element.name == 'ul':
+                # Process list items
+                for li in element.find_all('li', recursive=False):
+                    li_text = li.get_text(strip=True)
+                    if li_text and not li_text.startswith('http'):
+                        markdown.append(f"* {li_text}")
+                markdown.append("")
+                last_was_list = True
+            elif element.name == 'p':
+                text = element.get_text(strip=True)
+                if text and len(text) > 10:  # Skip very short paragraphs
+                    if last_was_list:
+                        markdown.append("")
+                    markdown.append(text)
+                    markdown.append("")
+                    last_was_list = False
+            elif element.name == 'pre':
+                code_text = element.get_text(strip=True)
+                if code_text:
+                    markdown.append(f"```\n{code_text}\n```")
+                    markdown.append("")
+                    last_was_list = False
+        
+        result = '\n'.join(markdown)
+        # Clean up multiple blank lines
+        while '\n\n\n' in result:
+            result = result.replace('\n\n\n', '\n\n')
+        
+        return result.strip()
     except Exception as e:
         return f"Error fetching release notes: {str(e)}"
 
@@ -74,8 +130,7 @@ def main():
         
         for version in versions:
             # Generate URL
-            version_nodots = version.replace('.', '')
-            url = lang_data['url_template'].replace('{version}', version).replace('{version_nodots}', version_nodots)
+            url = lang_data['url_template'].replace('{version}', version)
             
             print(f"  {version}... ", end='', flush=True)
             

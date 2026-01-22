@@ -579,14 +579,14 @@
                     <!-- J 9.5.0: Mar 28, 2024 -->
                     <div class="timeline-event" style="left: 11.92%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble" data-language="j" data-version="9.5.0">9.5.0</div>
+                        <div class="version-bubble" data-language="j" data-version="9.5">9.5.0</div>
                         <div class="date-label">Mar 28, 2024</div>
                     </div>
                     
                     <!-- J 9.6.0: Mar 6, 2025 -->
                     <div class="timeline-event" style="left: 58.77%;">
                         <div class="event-marker release-marker"></div>
-                        <div class="version-bubble" data-language="j" data-version="9.6.0">9.6.0</div>
+                        <div class="version-bubble" data-language="j" data-version="9.6">9.6.0</div>
                         <div class="date-label">Mar 6, 2025</div>
                     </div>
                     
@@ -611,6 +611,13 @@
                     <div class="month-notch" style="left: 62.5%;"></div>
                     <div class="month-notch" style="left: 75%;"></div>
                     <div class="month-notch" style="left: 87.5%;"></div>
+                    
+                    <!-- TinyAPL 0.1.0: Mar 11, 2024 - ABOVE -->
+                    <div class="timeline-event above" style="left: 9.31%;">
+                        <div class="event-marker release-marker"></div>
+                        <div class="version-bubble" data-language="tinyapl" data-version="0.1.0">0.1.0</div>
+                        <div class="date-label">Mar 11, 2024</div>
+                    </div>
                     
                     <!-- TinyAPL 0.2.0: Mar 14, 2024 - BELOW -->
                     <div class="timeline-event below" style="left: 10.00%;">
@@ -811,13 +818,12 @@
                     continue;
                 }
                 
-                // Empty line - close list if open
+                // Empty line - close list if open, but don't add extra breaks
                 if (line.trim() === '') {
                     if (inList) {
                         html += '</ul>';
                         inList = false;
                     }
-                    html += '<br>';
                     continue;
                 }
                 
@@ -848,8 +854,23 @@
             // Inline code with `code`
             text = text.replace(/`([^`]+)`/g, '<code style="background: #1a1a1a; padding: 2px 6px; border-radius: 3px;">$1</code>');
             
-            // Links [text](url)
-            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color: #8899ff;">$1</a>');
+            // Links [text](url) - but skip if url or text is empty
+            text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(match, linkText, url) {
+                linkText = linkText.trim();
+                url = url.trim();
+                if (!linkText || !url) {
+                    return linkText || ''; // Return just the text if URL is empty, or nothing if both empty
+                }
+                return '<a href="' + url + '" target="_blank" style="color: #8899ff;">' + linkText + '</a>';
+            });
+            
+            // Remove any remaining empty markdown links like []() or [](url) or [text]()
+            text = text.replace(/\[\]\([^)]*\)/g, '');
+            text = text.replace(/\[[^\]]*\]\(\)/g, function(match) {
+                // Extract just the text part
+                const textMatch = match.match(/\[([^\]]*)\]/);
+                return textMatch ? textMatch[1] : '';
+            });
             
             return text;
         }
@@ -864,10 +885,7 @@
             const langData = releasesData.languages[language];
             if (!langData) return null;
             
-            const versionNoDots = version.replace(/\./g, '');
-            return langData.url_template
-                .replace('{version}', version)
-                .replace('{version_nodots}', versionNoDots);
+            return langData.url_template.replace('{version}', version);
         }
         
         function initializeVersionBubbles() {
