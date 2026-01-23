@@ -206,7 +206,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             max-width: 1400px;
             min-width: 1000px;
-            max-height: 80vh;
+            max-height: 60vh;
             overflow-y: auto;
             text-align: left;
             line-height: 1.6;
@@ -963,7 +963,7 @@
                 // Get tooltip dimensions
                 const tooltipRect = tooltip.getBoundingClientRect();
                 const tooltipWidth = Math.min(tooltipRect.width, 1400);
-                const tooltipHeight = Math.min(tooltipRect.height, viewportHeight * 0.8);
+                const tooltipHeight = Math.min(tooltipRect.height, viewportHeight * 0.6);
                 
                 // Check for custom positioning
                 const customPosition = element.dataset.tooltipPosition;
